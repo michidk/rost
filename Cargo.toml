@@ -1,5 +1,5 @@
 [workspace]
 members = [
-    "rost_proc_macro",
+    "rostiger_sachse_proc_macro",
     "examples"
 ]
