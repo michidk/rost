@@ -1,34 +1,34 @@
 rost::rost! {
-    benutze std::sammlungen::Wörterbuch als Wöbu;
+    benutze std::sammlungen::Woerterbuch als Woebu;
 
-    eigenschaft SchlüsselWert {
+    eigenschaft SchluesselWert {
         funktion schreibe(&selbst, schlsl: Zeichenkette, wert: Zeichenkette);
-        funktion lese(&selbst, schlsl: Zeichenkette) -> Ergebnis<Möglichkeit<&Zeichenkette>, Zeichenkette>;
+        funktion lese(&selbst, schlsl: Zeichenkette) -> Ergebnis<Moeglichkeit<&Zeichenkette>, Zeichenkette>;
     }
 
-    statisch änd WÖRTERBUCH: Möglichkeit<Wöbu<Zeichenkette, Zeichenkette>> = Nichts;
+    statisch aend WOERTERBUCH: Moeglichkeit<Woebu<Zeichenkette, Zeichenkette>> = Nichts;
 
     struktur Konkret;
 
-    umstz SchlüsselWert für Konkret {
+    umstz SchluesselWert fuer Konkret {
 
         funktion schreibe(&selbst, schlsl: Zeichenkette, wert: Zeichenkette) {
-            lass wöbu = gefährlich {
-                WÖRTERBUCH.hole_oder_füge_ein_mit(Standard::standard)
+            lass woebu = gefaehrlich {
+                WOERTERBUCH.hole_oder_fuege_ein_mit(Standard::standard)
             };
-            wöbu.einfügen(schlsl, wert);
+            woebu.einfuegen(schlsl, wert);
         }
 
-        funktion lese(&selbst, schlsl: Zeichenkette) -> Ergebnis<Möglichkeit<&Zeichenkette>, Zeichenkette> {
-            wenn lass Etwas(wöbu) = gefährlich { WÖRTERBUCH.als_ref() } {
-                Gut(wöbu.hole(&schlsl))
+        funktion lese(&selbst, schlsl: Zeichenkette) -> Ergebnis<Moeglichkeit<&Zeichenkette>, Zeichenkette> {
+            wenn lass Etwas(woebu) = gefaehrlich { WOERTERBUCH.als_ref() } {
+                Gut(woebu.hole(&schlsl))
             } anderenfalls {
-                Fehler("Holt das Wörterbuch".hinein())
+                Fehler("Holt das Woerterbuch".hinein())
             }
         }
     }
 
-    öffentlich(kiste) funktion vielleicht(i: u32) -> Möglichkeit<Ergebnis<u32, Zeichenkette>> {
+    oeffentlich(kiste) funktion vielleicht(i: u32) -> Moeglichkeit<Ergebnis<u32, Zeichenkette>> {
         wenn i % 2 == 1 {
             wenn i == 42 {
                 Etwas(Fehler(Zeichenkette::von("Scheiße")))
@@ -48,7 +48,7 @@ rost::rost! {
     }
 
     funktion einstieg() {
-        lass änd x = 31;
+        lass aend x = 31;
 
         entspreche x {
             42 => {
@@ -57,12 +57,12 @@ rost::rost! {
             _ => ausgabe!("Na geht doch")
         }
 
-        für i in 0..10 {
+        fuer i in 0..10 {
             lass val = schleife {
                 abbruch i;
             };
 
-            während keins x < val {
+            waehrend keins x < val {
                 x += 1;
             }
 
