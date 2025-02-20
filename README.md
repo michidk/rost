@@ -2,7 +2,7 @@
 
 <p align="center"><img src="logo.jpg" alt="Rust German Logo"></p>
 
-Aren't you _muede_ from writing Rust programs in English? Do you like saying
+Aren't you _müde_ from writing Rust programs in English? Do you like saying
 "scheiße" a lot? Would you like to try something different, in an exotic and
 funny-sounding language? Would you want to bring some German touch to your
 programs?
@@ -21,31 +21,31 @@ Here's an example of what can be achieved with Rost:
 
 ```rust
 rost::rost! {
-    benutze std::sammlungen::Woerterbuch als Woebu;
+    benutze std::sammlungen::Wörterbuch als Wöbu;
 
-    eigenschaft SchluesselWert {
+    eigenschaft SchlüsselWert {
         funktion schreibe(&selbst, schlsl: Zeichenkette, wert: Zeichenkette);
-        funktion lese(&selbst, schlsl: Zeichenkette) -> Ergebnis<Moeglichkeit<&Zeichenkette>, Zeichenkette>;
+        funktion lese(&selbst, schlsl: Zeichenkette) -> Ergebnis<Möglichkeit<&Zeichenkette>, Zeichenkette>;
     }
 
-    statisch aend WOERTERBUCH: Moeglichkeit<Woebu<Zeichenkette, Zeichenkette>> = Nichts;
+    statisch änd WÖRTERBUCH: Möglichkeit<Wöbu<Zeichenkette, Zeichenkette>> = Nichts;
 
     struktur Konkret;
 
-    umstz SchluesselWert fuer Konkret {
+    umstz SchlüsselWert für Konkret {
 
         funktion schreibe(&selbst, schlsl: Zeichenkette, wert: Zeichenkette) {
-            lass woebu = gefaehrlich {
-                WOERTERBUCH.hole_oder_fuege_ein_mit(Standard::standard)
+            lass wöbu = gefährlich {
+                WÖRTERBUCH.hole_oder_füge_ein_mit(Standard::standard)
             };
-            woebu.einfuegen(schlsl, wert);
+            wöbu.einfügen(schlsl, wert);
         }
 
-        funktion lese(&selbst, schlsl: Zeichenkette) -> Ergebnis<Moeglichkeit<&Zeichenkette>, Zeichenkette> {
-            wenn lass Etwas(woebu) = gefaehrlich { WOERTERBUCH.als_ref() } {
-                Gut(woebu.hole(&schlsl))
+        funktion lese(&selbst, schlsl: Zeichenkette) -> Ergebnis<Möglichkeit<&Zeichenkette>, Zeichenkette> {
+            wenn lass Etwas(wöbu) = gefährlich { WÖRTERBUCH.als_ref() } {
+                Gut(wöbu.hole(&schlsl))
             } anderenfalls {
-                Fehler("Holt das Woerterbuch".hinein())
+                Fehler("Holt das Wörterbuch".hinein())
             }
         }
     }
