@@ -66,7 +66,7 @@ fn replace_ident(ident: Ident) -> Option<TokenTree> {
         "leeren" => "drain",
         "sammeln" => "collect",
         "finde" => "find",
-        "nehme" => "take", 
+        "nehme" | "nimm" => "take", 
         "produkt" => "product",
 
         // ordering
