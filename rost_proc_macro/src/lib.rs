@@ -66,7 +66,7 @@ fn replace_ident(ident: Ident) -> Option<TokenTree> {
         "leeren" => "drain",
         "sammeln" => "collect",
         "finde" => "find",
-        "nehme" | "nimm" => "take", 
+        "nehme" | "nimm" => "take",
         "produkt" => "product",
 
         // ordering
@@ -102,7 +102,6 @@ fn replace_ident(ident: Ident) -> Option<TokenTree> {
         "behaupte" => "assert",
         "behaupte_gleich" => "assert_eq",
         "behaupte_ungleich" => "assert_ne",
-        "unerreichbar" => "unreachable",
         "unerreichbar" => "unreachable",
         "während" | "waehrend" | "solange" => "while",
         "benutze" | "nutze" => "use",
