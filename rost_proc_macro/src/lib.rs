@@ -21,7 +21,6 @@ fn replace_ident(ident: Ident) -> Option<TokenTree> {
         "Klonen" => "Clone",
         "Gleichheit" => "Eq",
         "PartialGleichheit" => "PartialEq",
-        "Ordnung" => "Ord",
         "PartialOrdnung" => "PartialOrd",
         "sammlungen" => "collections",
         "ausgabe" => "println",
