@@ -1,5 +1,10 @@
 [workspace]
+resolver = "3"
 members = [
     "rost_proc_macro",
     "examples"
 ]
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.85"

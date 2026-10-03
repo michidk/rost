@@ -1,6 +1,11 @@
+//! A tiny procedural macro for writing Rust with German keywords and common
+//! standard-library names.
+
+#![forbid(unsafe_code)]
+
 use proc_macro::{Group, Ident, TokenStream, TokenTree};
 
-fn replace_ident(ident: Ident) -> Option<TokenTree> {
+fn translate_ident(ident: Ident) -> Option<Ident> {
     let ident_str = ident.to_string();
 
     let new_str = match ident_str.as_str() {
@@ -19,6 +24,8 @@ fn replace_ident(ident: Ident) -> Option<TokenTree> {
         "Satz" | "Menge" => "Set",
         "Kopieren" => "Copy",
         "Klonen" => "Clone",
+        "Debuggen" => "Debug",
+        "ableiten" => "derive",
         "Gleichheit" => "Eq",
         "PartialGleichheit" => "PartialEq",
         "PartialOrdnung" => "PartialOrd",
@@ -117,41 +124,27 @@ fn replace_ident(ident: Ident) -> Option<TokenTree> {
         _ => &ident_str,
     };
 
-    let new_ident = Ident::new(new_str, ident.span());
-    Some(TokenTree::Ident(new_ident))
+    Some(Ident::new(new_str, ident.span()))
 }
 
-fn replace_tree(tok: TokenTree, out: &mut Vec<TokenTree>) {
-    match tok {
+fn translate_tree(token: TokenTree) -> Option<TokenTree> {
+    match token {
         TokenTree::Group(group) => {
-            let mut group_elem = Vec::new();
-            replace_stream(group.stream(), &mut group_elem);
-            let mut new_stream = TokenStream::new();
-            new_stream.extend(group_elem);
-            out.push(TokenTree::Group(Group::new(group.delimiter(), new_stream)));
+            let mut translated = Group::new(group.delimiter(), translate_stream(group.stream()));
+            translated.set_span(group.span());
+            Some(TokenTree::Group(translated))
         }
-        TokenTree::Ident(ident) => {
-            if let Some(ident) = replace_ident(ident) {
-                out.push(ident);
-            }
-        }
-        TokenTree::Punct(..) | TokenTree::Literal(..) => {
-            out.push(tok);
-        }
+        TokenTree::Ident(ident) => translate_ident(ident).map(TokenTree::Ident),
+        TokenTree::Punct(..) | TokenTree::Literal(..) => Some(token),
     }
 }
 
-fn replace_stream(ts: TokenStream, out: &mut Vec<TokenTree>) {
-    for tok in ts {
-        replace_tree(tok, out)
-    }
+fn translate_stream(stream: TokenStream) -> TokenStream {
+    stream.into_iter().filter_map(translate_tree).collect()
 }
 
+/// Translates German Rust syntax into regular Rust syntax.
 #[proc_macro]
 pub fn rost(item: TokenStream) -> TokenStream {
-    let mut returned = Vec::new();
-    replace_stream(item, &mut returned);
-    let mut out = TokenStream::new();
-    out.extend(returned);
-    out
+    translate_stream(item)
 }

@@ -1,30 +1,28 @@
 rost::rost! {
     benutze std::sammlungen::Wörterbuch als Wöbu;
+    benutze std::sync::{LazyLock, Mutex};
 
     eigenschaft SchlüsselWert {
         fk schreibe(&selbst, schlsl: Zeichenkette, wert: Zeichenkette);
-        fk lese(&selbst, schlsl: Zeichenkette) -> Ergebnis<Möglichkeit<&Zeichenkette>, Zeichenkette>;
+        fk lese(&selbst, schlsl: &str) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette>;
     }
 
-    statisch änd WÖRTERBUCH: Möglichkeit<Wöbu<Zeichenkette, Zeichenkette>> = Nichts;
+    statisch WÖRTERBUCH: LazyLock<Mutex<Wöbu<Zeichenkette, Zeichenkette>>> =
+        LazyLock::new(|| Mutex::new(Wöbu::new()));
 
     struktur Konkret;
 
     umstz SchlüsselWert für Konkret {
 
         fk schreibe(&selbst, schlsl: Zeichenkette, wert: Zeichenkette) {
-            lass wöbu = gefährlich {
-                WÖRTERBUCH.hole_oder_füge_ein_mit(Standard::standard)
-            };
+            lass änd wöbu = WÖRTERBUCH.lock().erwarte("Wörterbuchsperre wurde vergiftet");
             wöbu.einfügen(schlsl, wert);
         }
 
-        fk lese(&selbst, schlsl: Zeichenkette) -> Ergebnis<Möglichkeit<&Zeichenkette>, Zeichenkette> {
-            wenn lass Etwas(wöbu) = gefährlich { WÖRTERBUCH.als_ref() } {
-                Gut(wöbu.hole(&schlsl))
-            } anderenfalls {
-                Fehler("Holt das Wörterbuch".hinein())
-            }
+        fk lese(&selbst, schlsl: &str) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette> {
+            lass wöbu = WÖRTERBUCH.lock()
+                .map_err(|_| Zeichenkette::von("Wörterbuchsperre wurde vergiftet"))?;
+            Gut(wöbu.hole(schlsl).cloned())
         }
     }
 
@@ -40,14 +38,18 @@ rost::rost! {
         }
     }
 
-    asynchron fk beispiel() {
+    öffentlich asynchron fk beispiel() {
     }
 
-    asynchron fk beispiel2() {
+    öffentlich asynchron fk beispiel2() {
         beispiel().abwarten;
     }
 
     fk einstieg() {
+        lass speicher = Konkret;
+        speicher.schreibe("servus".hinein(), "welt".hinein());
+        behaupte_gleich!(speicher.lese("servus").entpacken(), Etwas("welt".hinein()));
+
         lass änd x = 31;
 
         entspreche x {
@@ -58,9 +60,13 @@ rost::rost! {
         }
 
         für i in 0..10 {
-            lass val = schleife {
-                abbruch i;
-            };
+            lass änd val = 0;
+            schleife {
+                wenn val >= i {
+                    abbruch;
+                }
+                val += 1;
+            }
 
             während keins x < val {
                 x += 1;
