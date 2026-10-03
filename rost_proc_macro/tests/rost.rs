@@ -20,6 +20,19 @@ rost::rost! {
         }
         ergebnis
     }
+
+    makro_regeln! begrüßung {
+        () => { "Hallo" };
+    }
+
+    öffentlich vereinigung Zahl {
+        öffentlich ganz: u32,
+        öffentlich gleitend: f32,
+    }
+
+    gefährlich extern "C" {
+        sicher fk abs(eingabe: i32) -> i32;
+    }
 }
 
 #[test]
@@ -38,4 +51,17 @@ fn translates_nested_groups_and_unicode_identifiers() {
 
     assert_eq!(counts.get(&1), Some(&3));
     assert_eq!(counts.get(&2), Some(&1));
+}
+
+#[test]
+fn translates_rust_2024_weak_keywords() {
+    let wert = 7;
+
+    rost::rost! {
+        lass zeiger = &roh konstante wert;
+        behaupte_gleich!(zeiger, &wert als *const i32);
+        behaupte_gleich!(begrüßung!(), "Hallo");
+        behaupte_gleich!(std::mem::size_of::<Zahl>(), 4);
+        behaupte_gleich!(abs(-3), 3);
+    }
 }
