@@ -1,5 +1,9 @@
 rost::rost! {
     benutze std::sammlungen::Wörterbuch;
+    benutze std::synchronisierung::{VerzögerteSperre, Sperre};
+
+    statisch ZAHL: VerzögerteSperre<Sperre<i32>> =
+        VerzögerteSperre::neu(|| Sperre::neu(7));
 
     #[ableiten(Debuggen, PartialGleichheit)]
     struktur Person {
@@ -63,5 +67,13 @@ fn translates_rust_2024_weak_keywords() {
         behaupte_gleich!(begrüßung!(), "Hallo");
         behaupte_gleich!(std::mem::size_of::<Zahl>(), 4);
         behaupte_gleich!(abs(-3), 3);
+    }
+}
+
+#[test]
+fn translates_synchronization_types_and_methods() {
+    rost::rost! {
+        lass zahl = ZAHL.sperren().erwarte("Zahlensperre wurde vergiftet");
+        behaupte_gleich!(*zahl, 7);
     }
 }

@@ -1,28 +1,28 @@
 rost::rost! {
     benutze std::sammlungen::Wörterbuch als Wöbu;
-    benutze std::sync::{LazyLock, Mutex};
+    benutze std::synchronisierung::{VerzögerteSperre, Sperre};
 
     eigenschaft SchlüsselWert {
         fk schreibe(&selbst, schlsl: Zeichenkette, wert: Zeichenkette);
         fk lese(&selbst, schlsl: &str) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette>;
     }
 
-    statisch WÖRTERBUCH: LazyLock<Mutex<Wöbu<Zeichenkette, Zeichenkette>>> =
-        LazyLock::new(|| Mutex::new(Wöbu::new()));
+    statisch WÖRTERBUCH: VerzögerteSperre<Sperre<Wöbu<Zeichenkette, Zeichenkette>>> =
+        VerzögerteSperre::neu(|| Sperre::neu(Wöbu::neu()));
 
     struktur Konkret;
 
     umstz SchlüsselWert für Konkret {
 
         fk schreibe(&selbst, schlsl: Zeichenkette, wert: Zeichenkette) {
-            lass änd wöbu = WÖRTERBUCH.lock().erwarte("Wörterbuchsperre wurde vergiftet");
+            lass änd wöbu = WÖRTERBUCH.sperren().erwarte("Wörterbuchsperre wurde vergiftet");
             wöbu.einfügen(schlsl, wert);
         }
 
         fk lese(&selbst, schlsl: &str) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette> {
-            lass wöbu = WÖRTERBUCH.lock()
-                .map_err(|_| Zeichenkette::von("Wörterbuchsperre wurde vergiftet"))?;
-            Gut(wöbu.hole(schlsl).cloned())
+            lass wöbu = WÖRTERBUCH.sperren()
+                .ordne_fehler_zu(|_| Zeichenkette::von("Wörterbuchsperre wurde vergiftet"))?;
+            Gut(wöbu.hole(schlsl).geklont())
         }
     }
 
