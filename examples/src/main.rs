@@ -1,10 +1,10 @@
 rost::rost! {
-    benutze std::sammlungen::Wörterbuch als Wöbu;
-    benutze std::synchronisierung::{VerzögerteSperre, Sperre};
+    benutze standardbibliothek::sammlungen::Wörterbuch als Wöbu;
+    benutze standardbibliothek::synchronisierung::{VerzögerteSperre, Sperre};
 
     eigenschaft SchlüsselWert {
         fk schreibe(&selbst, schlsl: Zeichenkette, wert: Zeichenkette);
-        fk lese(&selbst, schlsl: &str) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette>;
+        fk lese(&selbst, schlsl: &Zeichenstrang) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette>;
     }
 
     statisch WÖRTERBUCH: VerzögerteSperre<Sperre<Wöbu<Zeichenkette, Zeichenkette>>> =
@@ -19,7 +19,7 @@ rost::rost! {
             wöbu.einfügen(schlsl, wert);
         }
 
-        fk lese(&selbst, schlsl: &str) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette> {
+        fk lese(&selbst, schlsl: &Zeichenstrang) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette> {
             lass wöbu = WÖRTERBUCH.sperren()
                 .ordne_fehler_zu(|_| Zeichenkette::von("Wörterbuchsperre wurde vergiftet"))?;
             Gut(wöbu.hole(schlsl).geklont())
@@ -79,13 +79,13 @@ rost::rost! {
             };
         }
 
-        benutze std::vgl::Ordnung;
-        let _mod7 = vec![0; 100].wieder()
+        benutze standardbibliothek::vgl::Ordnung;
+        lass _mod7 = vektor![0; 100].wieder()
             .nehme(50)
             .zuordnen(|nummer| nummer %  7)
-            .sammeln::<Vec<i32>>()
+            .sammeln::<Vektor<i32>>()
             .zu_wieder()
-            .falte(0, |a, nummer| match nummer.vgl(&a) {
+            .falte(0, |a, nummer| entspreche nummer.vgl(&a) {
                 Ordnung::Mehr => a - nummer,
                 Ordnung::Weniger => a + nummer,
                 Ordnung::Gleich => a,

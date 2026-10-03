@@ -44,14 +44,14 @@ Here is a larger example:
 
 ```rust
 rost::rost! {
-    benutze std::sammlungen::Wörterbuch als Wöbu;
+    benutze standardbibliothek::sammlungen::Wörterbuch als Wöbu;
 
     eigenschaft SchlüsselWert {
         fk schreibe(&selbst, schlsl: Zeichenkette, wert: Zeichenkette);
-        fk lese(&selbst, schlsl: &str) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette>;
+        fk lese(&selbst, schlsl: &Zeichenstrang) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette>;
     }
 
-    benutze std::synchronisierung::{VerzögerteSperre, Sperre};
+    benutze standardbibliothek::synchronisierung::{VerzögerteSperre, Sperre};
 
     statisch WÖRTERBUCH: VerzögerteSperre<Sperre<Wöbu<Zeichenkette, Zeichenkette>>> =
         VerzögerteSperre::neu(|| Sperre::neu(Wöbu::neu()));
@@ -65,7 +65,7 @@ rost::rost! {
             wöbu.einfügen(schlsl, wert);
         }
 
-        fk lese(&selbst, schlsl: &str) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette> {
+        fk lese(&selbst, schlsl: &Zeichenstrang) -> Ergebnis<Möglichkeit<Zeichenkette>, Zeichenkette> {
             lass wöbu = WÖRTERBUCH.sperren()
                 .ordne_fehler_zu(|_| Zeichenkette::von("Wörterbuchsperre wurde vergiftet"))?;
             Gut(wöbu.hole(schlsl).geklont())
